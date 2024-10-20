@@ -40,18 +40,18 @@ const TodoInput = styled.input`
   margin-right: 10px;
   border: 1px solid #ccc;
   border-radius: 26px;
-  font-size: 16px; /* Schriftgröße erhöhen */
+  font-size: 16px;
 `;
 
 const TodoButton = styled.button`
-  padding: 10px 15px; /* Horizontales Padding erhöhen */
+  padding: 10px 15px;
   background-color: #0070f3;
   color: white;
   border: none;
   border-radius: 28px;
   cursor: pointer;
-  margin: 5px; /* Abstand zwischen den Schaltflächen */
-  font-size: 16px; /* Schriftgröße erhöhen */
+  margin: 5px;
+  font-size: 16px;
 
   &:hover {
     background-color: green;
@@ -59,12 +59,11 @@ const TodoButton = styled.button`
 `;
 
 const TodoText = styled.span`
-  font-size: 20px; /* Schriftgröße für die Todo-Elemente */
-  color: #333; /* Dunklere Schriftfarbe für bessere Lesbarkeit */
+  font-size: 20px;
+  color: #333;
 `;
 
 export default function TodoList() {
-  // Verwende useLocalStorageState für todos
   const [todos, setTodos] = useLocalStorageState("todos", { defaultValue: [] });
   const [newTodo, setNewTodo] = useState("");
   const [isEditing, setIsEditing] = useState(null);
@@ -112,10 +111,10 @@ export default function TodoList() {
       <AnimationContainer>
         {animationData && (
           <Lottie
-            animationData={animationData} // Verwende die Animation
-            loop // Wiederhole die Animation
-            autoplay // Starte automatisch
-            style={{ width: "100%", height: "100%" }} // Animation füllt den Container
+            animationData={animationData}
+            loop
+            autoplay
+            style={{ width: "100%", height: "100%" }}
           />
         )}
       </AnimationContainer>
