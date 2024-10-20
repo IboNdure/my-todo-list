@@ -1,95 +1,168 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import styled from "styled-components";
+import Lottie from "lottie-react";
+import useLocalStorageState from "use-local-storage-state";
+
+const Todoh1 = styled.h1`
+  color: gray;
+  font-size: 50px;
+  text-align: center;
+`;
+
+const TodoContainer = styled.div`
+  max-width: 624px;
+  padding: 20px;
+  background-color: orange;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+`;
+
+const AnimationContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: greenyellow;
+`;
+
+const TodoInput = styled.input`
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 26px;
+  font-size: 16px; /* Schriftgröße erhöhen */
+`;
+
+const TodoButton = styled.button`
+  padding: 10px 15px; /* Horizontales Padding erhöhen */
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 28px;
+  cursor: pointer;
+  margin: 5px; /* Abstand zwischen den Schaltflächen */
+  font-size: 16px; /* Schriftgröße erhöhen */
+
+  &:hover {
+    background-color: green;
+  }
+`;
+
+const TodoText = styled.span`
+  font-size: 20px; /* Schriftgröße für die Todo-Elemente */
+  color: #333; /* Dunklere Schriftfarbe für bessere Lesbarkeit */
+`;
+
+export default function TodoList() {
+  // Verwende useLocalStorageState für todos
+  const [todos, setTodos] = useLocalStorageState("todos", { defaultValue: [] });
+  const [newTodo, setNewTodo] = useState("");
+  const [isEditing, setIsEditing] = useState(null);
+  const [currentTodo, setCurrentTodo] = useState("");
+  const [animationData, setAnimationData] = useState(null);
+
+  useEffect(() => {
+    fetch(
+      "https://lottie.host/fd770d94-9514-4eb1-a1a6-75c7ee49f0de/aENtoxPgG1.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setAnimationData(data);
+      });
+  }, []);
+
+  const addTodo = () => {
+    if (!newTodo.trim()) return;
+    const newTodoItem = { id: Date.now(), text: newTodo };
+    setTodos([...todos, newTodoItem]);
+    setNewTodo("");
+  };
+
+  const removeTodo = (id) => {
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
+  };
+
+  const startEditing = (id, text) => {
+    setIsEditing(id);
+    setCurrentTodo(text);
+  };
+
+  const updateTodo = (id) => {
+    const updatedTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, text: currentTodo } : todo
+    );
+    setTodos(updatedTodos);
+    setIsEditing(null);
+    setCurrentTodo("");
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <AnimationContainer>
+        {animationData && (
+          <Lottie
+            animationData={animationData} // Verwende die Animation
+            loop // Wiederhole die Animation
+            autoplay // Starte automatisch
+            style={{ width: "100%", height: "100%" }} // Animation füllt den Container
+          />
+        )}
+      </AnimationContainer>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <TodoContainer>
+        <Todoh1>Todo App</Todoh1>
+
+        <TodoInput
+          type="text"
+          placeholder="Neues Todo hinzufügen"
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
+        />
+        <TodoButton onClick={addTodo}>Hinzufügen</TodoButton>
+
+        <ul>
+          {todos.map((todo) => (
+            <li key={todo.id}>
+              {isEditing === todo.id ? (
+                <>
+                  <TodoInput
+                    type="text"
+                    value={currentTodo}
+                    onChange={(e) => setCurrentTodo(e.target.value)}
+                  />
+                  <TodoButton onClick={() => updateTodo(todo.id)}>
+                    Speichern
+                  </TodoButton>
+                  <TodoButton onClick={() => setIsEditing(null)}>
+                    Abbrechen
+                  </TodoButton>
+                </>
+              ) : (
+                <>
+                  <TodoText>{todo.text}</TodoText>
+                  <TodoButton onClick={() => startEditing(todo.id, todo.text)}>
+                    Bearbeiten
+                  </TodoButton>
+                  <TodoButton onClick={() => removeTodo(todo.id)}>
+                    Löschen
+                  </TodoButton>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </TodoContainer>
+    </>
   );
 }
